@@ -3,64 +3,21 @@
     <head>
         <meta charset="utf-8" />
         <base href="/">
-        <title>续费Demo</title>
+        <title data-ng-bind="'流量卡续费平台 | ' + $state.current.data.pageTitle"></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="" />
         <meta name="author" content="Wei Qiang" />
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-        <link rel="stylesheet" href="assets/lib/style/weui.css"/>
-        <link rel="stylesheet" href="assets/lib/style/example.css"/>
+        <link href="//cdn.bootcss.com/weui/0.4.0/style/weui.css" rel="stylesheet">
+        <link href="assets/lib/style/example.css" rel="stylesheet">
     </head>
-    <body data-ng-controller="mainController as main">
-        <div class="page">
-            <div class="hd">
-                <h1 class="page_title">流量卡续费</h1>
-            </div>
-            <div class="bd">
-                <div class="weui_cells weui_cells_form" data-ng-show="main.step === 0">
-                    <div class="weui_cell">
-                        <div class="weui_cell_hd"><label class="weui_label">手机号</label></div>
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <input class="weui_input" type="tel" data-ng-model="main.data.phoneno" placeholder="请输入手机号"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="weui_btn_area" data-ng-show="main.step === 0">
-                    <a class="weui_btn weui_btn_primary" data-ng-click="main.submitPhoneno()">下一步</a>
-                </div>
-                
-                <div class="weui_cells" data-ng-show="main.step === 1">
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>手机号</p>
-                        </div>
-                        <div class="weui_cell_ft"> {{main.data.phoneno}} </div>
-                    </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>套餐</p>
-                        </div>
-                        <div class="weui_cell_ft"> 500M/月 </div>
-                    </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>金额</p>
-                        </div>
-                        <div class="weui_cell_ft"> 10元 </div>
-                    </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>有效至</p>
-                        </div>
-                        <div class="weui_cell_ft"> 2016年2月 </div>
-                    </div>
-                </div>
-                <div class="weui_btn_area" data-ng-show="main.step === 1">
-                    <a class="weui_btn weui_btn_primary" data-ng-click="main.submitOrder()"> 确认 </a>
-                </div>
-            </div>
-        </div>
-        <script src="//cdn.bootcss.com/angular.js/1.4.9/angular.js"></script>
+    <body>
+        <div ui-view></div>
+				
+        <script src="//cdn.bootcss.com/angular.js/1.5.0/angular.js"></script>
+				<script src="//cdn.bootcss.com/angular-ui-router/0.2.18/angular-ui-router.js"></script>
+				
         <script src="app/app.js"></script>
+				<script src="app/app.routes.js"></script>
     </body>
 </html>

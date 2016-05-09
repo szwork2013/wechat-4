@@ -1,8 +1,15 @@
-var express = require('express');
-var app = express();
-var morgan = require('morgan');
-var config = require('./config');
-var path = require('path');
+'use strict'
+const express = require('express');
+const app = express();
+const morgan = require('morgan');
+const path = require('path');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const xmlparser = require('express-xml-bodyparser');
+
+const config = require('./config');
+
+const jsonParser = bodyParser.json()
 
 app.use(function(req, res, next) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,13 +18,22 @@ app.use(function(req, res, next) {
 	next();
 });
 
+app.use(bodyParser.urlencoded({extended: true}));
+//app.use(bodyParser.json());
+
 app.use(morgan('dev'));
+
+mongoose.connect(config.database);
 
 app.use(express.static(__dirname + '/public'));
 
-//var apiRoutes = require('./app/routes/api')(app, express);
+let apiRoutes = require('./app/routes/api')(app, express);
 
-//app.use('/api', apiRoutes);
+app.use('/api', jsonParser, apiRoutes);
+
+let xmlRoutes = require('./app/routes/wxApi')(app, express);
+
+app.use('/xml', xmlparser({trim: false, explicitArray: false}), xmlRoutes);
 
 app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
