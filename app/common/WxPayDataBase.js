@@ -12,8 +12,7 @@ const config = require('../../config');
 
 module.exports = class WxPayDataBase {
 	
-	constructor(code, values) {
-		this.code = code;
+	constructor(values) {
 		this.values = values;
 	}
 	

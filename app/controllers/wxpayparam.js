@@ -57,14 +57,14 @@ module.exports = {
 					body: '套餐费_' + simcard.phoneno, //商品描述
 					total_fee: simcard.cardpackage.fee, //总金额，单位为分
 					spbill_create_ip: '123.57.18.0', //订单生成的机器IP
-					notify_url: 'http://123.57.18.0:8085/xml/result', //接收支付成功通知的回调url
+					notify_url: 'http://recharge.m2m-10086.cn/xml/result', //接收支付成功通知的回调url
 					trade_type: 'JSAPI', //JSAPI、NATIVE、APP
 					nonce_str: tools.genNonceStr(),
 					out_trade_no: orderno,
 					openid: openId
 				}
 				
-				let wxPayDataBase = new WxPayDataBase(code, baseDataObj);
+				let wxPayDataBase = new WxPayDataBase(baseDataObj);
 						
 				wxPayDataBase
 						.getWxPayParams()
