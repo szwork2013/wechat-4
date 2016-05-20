@@ -15,6 +15,8 @@ module.exports = {
 		let openId = req.query.openId;
 		let phoneno = req.query.phoneno;
 		
+		if(!openId || !phoneno) return res.json({success: false, message: '参数不完整！'});
+		
 		Simcard.findOne({phoneno: phoneno, mobileAccount: null}, {
 			phoneno: 1,
 			cardpackage: 1,
@@ -23,6 +25,7 @@ module.exports = {
 		}, function(err, simcard) {
 			
 			if(err) return res.send(err);
+			if(!simcard) return res.json({success: false, message: '号码不存在！'});
 			
 			//将订单信息写入数据库
 			let chargeorder = new Chargeorder();
@@ -69,7 +72,7 @@ module.exports = {
 				wxPayDataBase
 						.getWxPayParams()
 						.then((wxPayParams) => {
-							res.json({orderData: orderData, wxPayParams: wxPayParams});
+							res.json({success: true, data: {orderData: orderData, wxPayParams: wxPayParams}});
 						});
 			});
 		});

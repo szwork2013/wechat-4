@@ -43,7 +43,7 @@ angular.module('userApp', ['app.routes'])
 	var openId = localStorage.getItem('openId');
 	var phoneno = $stateParams.phoneno;
 
-	if(!openId) {
+	if(!openId || !phoneno) {
 		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpublic.mehunk.info&response_type=code&scope=snsapi_base&state=http%3a%2f%2frecharge.m2m-10086.cn#wechat_redirect';
 		return;
 	}
@@ -54,8 +54,12 @@ angular.module('userApp', ['app.routes'])
 		.get('api/wcpayparam?openId=' + openId + '&phoneno=' + phoneno)
 		.success(function(data) {
 			vm.loaded = true;
-			vm.orderData = data.orderData;
-			wcPayParam = data.wxPayParams;
+			if(!data.success) {
+				window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpublic.mehunk.info&response_type=code&scope=snsapi_base&state=http%3a%2f%2frecharge.m2m-10086.cn#wechat_redirect';
+				return;
+			}
+			vm.orderData = data.data.orderData;
+			wcPayParam = data.data.wxPayParams;
 		});
 
 	function confirmOrder() {
