@@ -1,6 +1,6 @@
 module.exports = {
 	'port': process.env.PORT || 8085,
-	'database': 'mongodb://127.0.0.1:27017/iot',
+	'database': 'mongodb://root:Shijiazhuang;2012@120.24.156.177:27017/cmiot?authSource=admin',
     'wechat': {
         'appid': 'wxafeda6528eb6a895',
         'appsecret': 'ed4945f780cf8cdf1ae0ed2be156779e',
