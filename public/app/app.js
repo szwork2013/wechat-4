@@ -8,6 +8,16 @@ angular.module('userApp', ['app.routes'])
 	
 	var vm = this;
 	
+	var openId = $location.search().openId;
+	
+	if(!openId) {
+		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpublic.mehunk.info&response_type=code&scope=snsapi_base&state=http%3a%2f%2frecharge.m2m-10086.cn#wechat_redirect';
+		return;
+	}
+	
+	if(!localStorage.getItem('openId'))
+		localStorage.setItem('openId', openId);
+	
 	vm.submitPhoneno = submitPhoneno;
 	
 	function submitPhoneno() {
@@ -16,7 +26,7 @@ angular.module('userApp', ['app.routes'])
 		
 		$http.get('api/validity/' + vm.data.phoneno).success(function(data) {
 			if(data.success)
-				window.location.href = 'order/?state=' + vm.data.phoneno;
+				$state.go('order', {phoneno: vm.data.phoneno});
 			else 
 				vm.hint = data.message;
 		});
@@ -24,29 +34,30 @@ angular.module('userApp', ['app.routes'])
 	
 })
 
-.controller('orderController', function($location, $http, $state) {
+.controller('orderController', function($location, $http, $state, $stateParams) {
 	
 	var vm = this;
 	
 	vm.confirmOrder = confirmOrder;
 	
+	var openId = localStorage.getItem('openId');
+	var phoneno = $stateParams.phoneno;
+
+	if(!openId) {
+		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpublic.mehunk.info&response_type=code&scope=snsapi_base&state=http%3a%2f%2frecharge.m2m-10086.cn#wechat_redirect';
+		return;
+	}
+	
 	var wcPayParam = {};
-	
-	var code = $location.search().code;
-	var state = $location.search().state;
-	
-	if(code == undefined) {
-		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpay.mehunk.info%2forder%2f&response_type=code&scope=snsapi_base&state=' + state + '#wechat_redirect';
-	} else {
-		
-		$http.get('api/wcpayparam?code=' + code + '&state=' + state).success(function(data) {
+
+	$http
+		.get('api/wcpayparam?openId=' + openId + '&phoneno=' + phoneno)
+		.success(function(data) {
 			vm.loaded = true;
 			vm.orderData = data.orderData;
 			wcPayParam = data.wxPayParams;
 		});
-		
-	}
-	
+
 	function confirmOrder() {
 		
 		WeixinJSBridge.invoke('getBrandWCPayRequest', wcPayParam, function(res){
@@ -55,15 +66,5 @@ angular.module('userApp', ['app.routes'])
 			}
 		});
     }
-	
-})
-
-.controller('smsController', function($location) {
-	var code = $location.search().code;
-	
-	if(code == undefined)
-		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxafeda6528eb6a895&redirect_uri=http%3a%2f%2fpay.mehunk.info%2fsms%2f&response_type=code&scope=snsapi_base#wechat_redirect';
-	else 
-		window.location.href = 'http://sms.mehunk.info/?code=' + code;
 	
 });

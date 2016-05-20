@@ -12,13 +12,10 @@ module.exports = {
 	
 	getWxPayParam(req, res) {
 		
-		let code = req.query.code;
-		let phoneno = req.query.state;
+		let openId = req.query.openId;
+		let phoneno = req.query.phoneno;
 		
-		//从数据库中获取号码信息
-		//let phoneno = '1064809346102';
-		
-		Simcard.findOne({phoneno: phoneno}, {
+		Simcard.findOne({phoneno: phoneno, mobileAccount: null}, {
 			phoneno: 1,
 			cardpackage: 1,
 			feeStartDate: 1,
@@ -63,31 +60,23 @@ module.exports = {
 					notify_url: 'http://123.57.18.0:8085/xml/result', //接收支付成功通知的回调url
 					trade_type: 'JSAPI', //JSAPI、NATIVE、APP
 					nonce_str: tools.genNonceStr(),
-					out_trade_no: orderno
+					out_trade_no: orderno,
+					openid: openId
 				}
 				
 				let wxPayDataBase = new WxPayDataBase(code, baseDataObj);
 						
-				wxPayDataBase.getOpenId()
-					.then(function(openid) {
-						wxPayDataBase.setSign();
-						return;
-					}).then(function() {
-						return wxPayDataBase.getWxPayParams();
-					}).then(function(wxPayParams) {
-						console.log(wxPayParams);
-						res.json({orderData: orderData, wxPayParams: wxPayParams});
-					});
-				
+				wxPayDataBase
+						.getWxPayParams()
+						.then((wxPayParams) => {
+							res.json({orderData: orderData, wxPayParams: wxPayParams});
+						});
 			});
-			
-			
-
 		});
 	},
 	
 	verifyPhoneno(req, res) {
-		Simcard.findOne({phoneno: req.params.phoneno}, {cardpackage: 1, feeEndDate: 1}, function(err, simcard) {
+		Simcard.findOne({phoneno: req.params.phoneno, mobileAccount: null}, {cardpackage: 1, feeEndDate: 1}, function(err, simcard) {
 			if(err) return res.send(err);
 			let hasRecharged = ['1064832020751',
 				'1064832020754',

@@ -87,8 +87,8 @@ module.exports = class WxPayDataBase {
 		let wxPayDataBase = this;
 		
 		return new Promise(function(resolve, reject) {
+			wxPayDataBase.setSign();
 			let postBody = wxPayDataBase.toXml();
-			//console.log(postBody);
 			request
 				.post('https://' + config.wechat.prepayUrl + config.wechat.prepayPath)
 				.set('Content-Type', 'application/xml')
