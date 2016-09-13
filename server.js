@@ -1,7 +1,6 @@
 'use strict'
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -20,8 +19,6 @@ app.use(function(req, res, next) {
 
 app.use(bodyParser.urlencoded({extended: true}));
 //app.use(bodyParser.json());
-
-app.use(morgan('dev'));
 
 mongoose.connect(config.database);
 
